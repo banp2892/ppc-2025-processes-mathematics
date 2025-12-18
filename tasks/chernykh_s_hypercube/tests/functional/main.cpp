@@ -90,15 +90,13 @@ TEST_P(ChernykhSRunFuncTestsHypercube, FindMinInMatrix) {
 
 const std::array<TestType, 6> kTestParam = {};
 
-const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<ChernykhSHypercubeMPI, InType>(
-                                               kTestParam, PPC_SETTINGS_chernykh_s_hypercube),
-                                           ppc::util::AddFuncTask<ChernykhSHypercubeSEQ, InType>(
-                                               kTestParam, PPC_SETTINGS_chernykh_s_hypercube));
+const auto kTestTasksList = std::tuple_cat(
+    ppc::util::AddFuncTask<ChernykhSHypercubeMPI, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube),
+    ppc::util::AddFuncTask<ChernykhSHypercubeSEQ, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube));
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
-const auto kPerfTestName =
-    ChernykhSRunFuncTestsHypercube::PrintFuncTestName<ChernykhSRunFuncTestsHypercube>;
+const auto kPerfTestName = ChernykhSRunFuncTestsHypercube::PrintFuncTestName<ChernykhSRunFuncTestsHypercube>;
 
 INSTANTIATE_TEST_SUITE_P(MinMatrixTests, ChernykhSRunFuncTestsHypercube, kGtestValues, kPerfTestName);
 

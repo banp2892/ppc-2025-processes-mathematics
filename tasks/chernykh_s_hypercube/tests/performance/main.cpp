@@ -48,9 +48,8 @@ TEST_P(ChernykhSRunFuncTestsHypercube, RunPerfModes) {
   ExecuteTest(GetParam());
 }
 
-const auto kAllPerfTasks =
-    ppc::util::MakeAllPerfTasks<InType, ChernykhSHypercubeMPI, ChernykhSHypercubeSEQ>(
-        PPC_SETTINGS_chernykh_s_hypercube);
+const auto kAllPerfTasks = ppc::util::MakeAllPerfTasks<InType, ChernykhSHypercubeMPI, ChernykhSHypercubeSEQ>(
+    PPC_SETTINGS_chernykh_s_hypercube);
 
 const auto kGtestValues = ppc::util::TupleToGTestValues(kAllPerfTasks);
 
