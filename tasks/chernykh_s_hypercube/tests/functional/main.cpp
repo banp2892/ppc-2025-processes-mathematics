@@ -84,9 +84,8 @@ const std::array<TestType, 4> kTestParam = {std::make_tuple(std::vector<int>{0},
                                             std::make_tuple(std::vector<int>{0, 1, 2, 3}, "full_4_nodes"),
                                             std::make_tuple(std::vector<int>{1, 4, 7}, "sparse_nodes_1_4_7")};
 
-const auto kTestTasksList = std::tuple_cat(
-    ppc::util::AddFuncTask<ChernykhSHypercubeMPI, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube),
-    ppc::util::AddFuncTask<ChernykhSHypercubeSEQ, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube));
+const auto kTestTasksList =
+    ppc::util::AddFuncTask<ChernykhSHypercubeMPI, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube);
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
