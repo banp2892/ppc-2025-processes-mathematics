@@ -10,11 +10,11 @@ namespace chernykh_s_hypercube {
 ChernykhSHypercubeSEQ::ChernykhSHypercubeSEQ(const InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
   GetInput() = InType(in);
-  GetOutput() = std::numeric_limits<double>::max();
+  GetOutput() = 0;
 }
 
 bool ChernykhSHypercubeSEQ::ValidationImpl() {
-  return (GetOutput() == std::numeric_limits<double>::max());
+  return !GetInput().empty();
 }
 
 bool ChernykhSHypercubeSEQ::PreProcessingImpl() {
@@ -22,26 +22,14 @@ bool ChernykhSHypercubeSEQ::PreProcessingImpl() {
 }
 
 bool ChernykhSHypercubeSEQ::RunImpl() {
-  const auto &matrix = GetInput();
-
-  if (matrix.empty()) {
-    GetOutput() = std::numeric_limits<double>::max();
-    return true;
-  }
-  double minimum = std::numeric_limits<double>::max();
-  for (const auto &row : matrix) {
-    for (double element : row) {
-      minimum = std::min(element, minimum);
-    }
-  }
-
-  GetOutput() = minimum;
+  const std::vector<int> &active_nodes = GetInput();
+  int total_sum = std::accumulate(active_nodes.begin(), active_nodes.end(), 0);
+  GetOutput() = total_sum;
   return true;
 }
 
 bool ChernykhSHypercubeSEQ::PostProcessingImpl() {
   return true;
-  ;
 }
 
 }  // namespace chernykh_s_hypercube

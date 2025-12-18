@@ -5,12 +5,12 @@
 
 namespace chernykh_s_hypercube {
 
-class ChernykhSMinHypercube : public BaseTask {
+class ChernykhSHypercubeMPI : public BaseTask {
  public:
   static constexpr ppc::task::TypeOfTask GetStaticTypeOfTask() {
     return ppc::task::TypeOfTask::kMPI;
   }
-  explicit ChernykhSMinHypercube(const InType &in);
+  explicit ChernykhSHypercubeMPI(const InType &in);
 
  private:
   bool ValidationImpl() override;

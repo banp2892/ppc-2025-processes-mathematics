@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <mpi.h>
 #include <stb/stb_image.h>
 
 #include <algorithm>
@@ -25,53 +26,37 @@ namespace chernykh_s_hypercube {
 class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType, OutType, TestType> {
  public:
   static std::string PrintTestParam(const TestType &test_param) {
-    return test_param;
+    return std::get<1>(test_param);
   }
 
  protected:
   void SetUp() override {
-    TestType params = std::get<static_cast<std::size_t>(ppc::util::GTestParamIndex::kTestParams)>(GetParam());
+    int size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    std::string in_file_name = params + ".txt";
-    std::string abs_path = ppc::util::GetAbsoluteTaskPath(PPC_ID_chernykh_s_hypercube, in_file_name);
-
-    std::ifstream in_file(abs_path, std::ios::in);
-    if (!in_file.is_open()) {
-      throw std::runtime_error("Failed to open file : " + abs_path);
+    TestType test_params = std::get<2>(GetParam());
+    input_data_ = std::get<0>(test_params);
+    int max_required_rank = -1;
+    for (int r : input_data_) {
+      if (r > max_required_rank) {
+        max_required_rank = r;
+      }
     }
 
-    input_data_.clear();
-    std::string line;
-
-    while (std::getline(in_file, line)) {
-      if (line.empty()) {
-        continue;
-      }
-
-      std::istringstream iss(line);
-      std::vector<double> row;
-      double value = 0.0;
-
-      while (iss >> value) {
-        while (iss >> value) {
-          row.push_back(value);
-        }
-
-        if (!row.empty()) {
-          input_data_.push_back(row);
-        }
-      }
+    if (max_required_rank >= size) {
+      GTEST_SKIP() << "Test requires " << (max_required_rank + 1) << " processes, but only " << size << " available.";
     }
   }
+
   bool CheckTestOutputData(OutType &output_data) final {
-    const auto &mat = input_data_;
-    double expected_min = std::numeric_limits<double>::max();
-    for (const auto &row : mat) {
-      for (double v : row) {
-        expected_min = std::min(expected_min, v);
-      }
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if (rank == 0) {
+      int expected_sum = std::accumulate(input_data_.begin(), input_data_.end(), 0);
+      return output_data == expected_sum;
     }
-    return std::fabs(output_data - expected_min) < 1e-6;
+    return true;
   }
 
   InType GetTestInputData() final {
@@ -84,11 +69,14 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType
 
 namespace {
 
-TEST_P(ChernykhSRunFuncTestsHypercube, FindMinInMatrix) {
+TEST_P(ChernykhSRunFuncTestsHypercube, SumHypercube) {
   ExecuteTest(GetParam());
 }
 
-const std::array<TestType, 6> kTestParam = {};
+const std::array<TestType, 4> kTestParam = {std::make_tuple(std::vector<int>{0}, "rank_0_only"),
+                                            std::make_tuple(std::vector<int>{0, 1}, "ranks_0_1"),
+                                            std::make_tuple(std::vector<int>{0, 1, 2, 3}, "full_4_nodes"),
+                                            std::make_tuple(std::vector<int>{1, 4, 7}, "sparse_nodes_1_4_7")};
 
 const auto kTestTasksList = std::tuple_cat(
     ppc::util::AddFuncTask<ChernykhSHypercubeMPI, InType>(kTestParam, PPC_SETTINGS_chernykh_s_hypercube),
@@ -98,7 +86,7 @@ const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 
 const auto kPerfTestName = ChernykhSRunFuncTestsHypercube::PrintFuncTestName<ChernykhSRunFuncTestsHypercube>;
 
-INSTANTIATE_TEST_SUITE_P(MinMatrixTests, ChernykhSRunFuncTestsHypercube, kGtestValues, kPerfTestName);
+INSTANTIATE_TEST_SUITE_P(HypercubeTests, ChernykhSRunFuncTestsHypercube, kGtestValues, kPerfTestName);
 
 }  // namespace
 }  // namespace chernykh_s_hypercube
