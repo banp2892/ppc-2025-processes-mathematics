@@ -34,15 +34,21 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    bool is_power_of_two = (size > 0) && ((size & (size - 1)) == 0);
+    if (!is_power_of_two) {
+      GTEST_SKIP() << "Hypercube requires power-of-two processes, but " << size << " provided.";
+      return;
+    }
+
     TestType test_params = std::get<2>(GetParam());
     input_data_ = std::get<0>(test_params);
+
     int max_required_rank = -1;
     for (int r : input_data_) {
       if (r > max_required_rank) {
         max_required_rank = r;
       }
     }
-
     if (max_required_rank >= size) {
       GTEST_SKIP() << "Test requires " << (max_required_rank + 1) << " processes, but only " << size << " available.";
     }
