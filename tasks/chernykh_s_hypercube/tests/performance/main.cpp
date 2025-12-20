@@ -14,12 +14,10 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunPerfTests<InType
   InType input_data_;
 
   void SetUp() override {
-    // Минимальная заглушка
     input_data_ = {0, 1};
   }
 
   bool CheckTestOutputData(OutType &output_data [[maybe_unused]]) final {
-    // Используем правильную функцию GetMPIRank
     if (ppc::util::GetMPIRank() == 0) {
       return true;
     }
@@ -35,8 +33,6 @@ TEST_P(ChernykhSRunFuncTestsHypercube, RunPerfModes) {
   ExecuteTest(GetParam());
 }
 
-// Убедись, что ChernykhSHypercubeMPI определен в ops_mpi.hpp
-// внутри namespace chernykh_s_hypercube
 const auto kAllPerfTasks = ppc::util::MakeAllPerfTasks<InType, ChernykhSHypercubeMPI, ChernykhSHypercubeSEQ>(
     PPC_SETTINGS_chernykh_s_hypercube);
 

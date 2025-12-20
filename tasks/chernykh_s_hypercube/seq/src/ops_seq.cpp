@@ -22,9 +22,6 @@ bool ChernykhSHypercubeSEQ::PreProcessingImpl() {
 }
 
 bool ChernykhSHypercubeSEQ::RunImpl() {
-  const std::vector<int> &active_nodes = GetInput();
-  int total_sum = std::accumulate(active_nodes.begin(), active_nodes.end(), 0);
-  GetOutput() = total_sum;
   return true;
 }
 
