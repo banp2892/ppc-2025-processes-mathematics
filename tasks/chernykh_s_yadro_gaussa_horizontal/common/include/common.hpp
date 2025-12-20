@@ -7,9 +7,9 @@
 
 namespace chernykh_s_yadro_gaussa_horizontal {
 
-using InType = std::vector<std::vector<double>>;
-using OutType = double;
-using TestType = std::string;
+using InType = std::tuple<int, int, std::vector<int>>;
+using OutType = std::vector<int>;
+using TestType = std::tuple<int, std::string>;
 using BaseTask = ppc::task::Task<InType, OutType>;
 
 }  // namespace chernykh_s_yadro_gaussa_horizontal
