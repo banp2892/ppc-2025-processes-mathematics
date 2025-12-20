@@ -3,13 +3,14 @@
 #include <mpi.h>
 
 #include <algorithm>
-#include <cstddef>
-#include <limits>
 #include <vector>
 
 #include "chernykh_s_hypercube/common/include/common.hpp"
 
-static bool process_hypercube_step(int &local_data, int step, int rank, int size) {
+namespace chernykh_s_hypercube {
+
+namespace {
+bool ProcessHypercubeStep(int &local_data, int step, int rank, int size) {
   int mask = 1 << step;
   int neighbor = rank ^ mask;
 
@@ -17,20 +18,19 @@ static bool process_hypercube_step(int &local_data, int step, int rank, int size
     return false;
   }
 
-  if (rank & mask) {
+  if ((rank & mask) != 0) {
     MPI_Send(&local_data, 1, MPI_INT, neighbor, 0, MPI_COMM_WORLD);
     return false;
-  } else {
-    if (neighbor < size) {
-      int received_val = 0;
-      MPI_Recv(&received_val, 1, MPI_INT, neighbor, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      local_data += received_val;
-    }
-    return true;
   }
-}
 
-namespace chernykh_s_hypercube {
+  if (neighbor < size) {
+    int received_val = 0;
+    MPI_Recv(&received_val, 1, MPI_INT, neighbor, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    local_data += received_val;
+  }
+  return true;
+}
+}  // namespace
 
 ChernykhSHypercubeMPI::ChernykhSHypercubeMPI(const InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
@@ -39,7 +39,7 @@ ChernykhSHypercubeMPI::ChernykhSHypercubeMPI(const InType &in) {
 }
 
 bool ChernykhSHypercubeMPI::ValidationImpl() {
-  int size;
+  int size = 0;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   bool is_power_of_two = (size > 0) && ((size & (size - 1)) == 0);
@@ -51,13 +51,7 @@ bool ChernykhSHypercubeMPI::ValidationImpl() {
     return false;
   }
 
-  for (int r : GetInput()) {
-    if (r < 0 || r >= size) {
-      return false;
-    }
-  }
-
-  return true;
+  return std::ranges::all_of(GetInput(), [size](int r) { return r >= 0 && r < size; });
 }
 
 bool ChernykhSHypercubeMPI::PreProcessingImpl() {
@@ -65,14 +59,15 @@ bool ChernykhSHypercubeMPI::PreProcessingImpl() {
 }
 
 bool ChernykhSHypercubeMPI::RunImpl() {
-  int rank, size;
+  int rank = 0;
+  int size = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   const std::vector<int> &active_nodes = GetInput();
 
   int current_val = 0;
-  if (std::find(active_nodes.begin(), active_nodes.end(), rank) != active_nodes.end()) {
+  if (std::ranges::find(active_nodes, rank) != active_nodes.end()) {
     current_val = rank;
   }
 
@@ -82,10 +77,11 @@ bool ChernykhSHypercubeMPI::RunImpl() {
   }
 
   for (int i = 0; i < dims; ++i) {
-    if (!process_hypercube_step(current_val, i, rank, size)) {
+    if (!ProcessHypercubeStep(current_val, i, rank, size)) {
       break;
     }
   }
+
   if (rank == 0) {
     GetOutput() = current_val;
   }

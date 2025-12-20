@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "chernykh_s_hypercube/common/include/common.hpp"
 #include "chernykh_s_hypercube/mpi/include/ops_mpi.hpp"
 #include "chernykh_s_hypercube/seq/include/ops_seq.hpp"

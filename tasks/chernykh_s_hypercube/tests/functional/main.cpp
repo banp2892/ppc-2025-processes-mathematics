@@ -1,25 +1,17 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
-#include <stb/stb_image.h>
 
-#include <algorithm>
+#include <algorithm>  // Для std::max
 #include <array>
 #include <cmath>
-#include <cstddef>
-#include <fstream>
-#include <ios>
-#include <limits>
-#include <sstream>
-#include <stdexcept>
+#include <numeric>  // Для std::accumulate
 #include <string>
 #include <tuple>
 #include <vector>
 
 #include "chernykh_s_hypercube/common/include/common.hpp"
 #include "chernykh_s_hypercube/mpi/include/ops_mpi.hpp"
-#include "chernykh_s_hypercube/seq/include/ops_seq.hpp"
 #include "util/include/func_test_util.hpp"
-#include "util/include/util.hpp"
 
 namespace chernykh_s_hypercube {
 
@@ -31,7 +23,7 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType
 
  protected:
   void SetUp() override {
-    int size;
+    int size = 0;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     bool is_power_of_two = (size > 0) && ((size & (size - 1)) == 0);
@@ -45,9 +37,7 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType
 
     int max_required_rank = -1;
     for (int r : input_data_) {
-      if (r > max_required_rank) {
-        max_required_rank = r;
-      }
+      max_required_rank = std::max(max_required_rank, r);
     }
     if (max_required_rank >= size) {
       GTEST_SKIP() << "Test requires " << (max_required_rank + 1) << " processes, but only " << size << " available.";
@@ -55,7 +45,7 @@ class ChernykhSRunFuncTestsHypercube : public ppc::util::BaseRunFuncTests<InType
   }
 
   bool CheckTestOutputData(OutType &output_data) final {
-    int rank;
+    int rank = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     if (rank == 0) {
