@@ -26,7 +26,6 @@ bool ChernykhSYadroGaussaHorizontalMPI::PreProcessingImpl() {
 }
 
 bool ChernykhSYadroGaussaHorizontalMPI::RunImpl() {
-  
   return true;
 }
 

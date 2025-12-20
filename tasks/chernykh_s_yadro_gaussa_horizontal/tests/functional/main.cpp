@@ -29,11 +29,8 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunFuncTests
   }
 
  protected:
-  void SetUp() override {
-    
-  }
+  void SetUp() override {}
   bool CheckTestOutputData(OutType &output_data) final {
-    
     return std::fabs(output_data - expected_min) < 1e-6;
   }
 

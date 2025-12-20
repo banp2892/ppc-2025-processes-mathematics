@@ -22,7 +22,6 @@ bool ChernykhSYadroGaussaHorizontalSEQ::PreProcessingImpl() {
 }
 
 bool ChernykhSYadroGaussaHorizontalSEQ::RunImpl() {
-  
   return true;
 }
 
