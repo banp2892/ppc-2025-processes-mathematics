@@ -71,6 +71,17 @@ bool ChernykhSHypercubeMPI::RunImpl() {
     current_val = rank;
   }
 
+  volatile double workload_accumulator = 0.0;
+  for (int a = 0; a < 5000; a++) {
+    for (int b = 1; b < 5000; b++) {
+      workload_accumulator += static_cast<double>(a) / static_cast<double>(b);
+    }
+  }
+
+  if (workload_accumulator < 0) {
+    rank += 1;
+  }
+
   int dims = 0;
   while ((1 << dims) < size) {
     dims++;
