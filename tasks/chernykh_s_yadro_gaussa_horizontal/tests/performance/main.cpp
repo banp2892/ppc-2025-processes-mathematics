@@ -14,22 +14,7 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunPerfTests
  private:
   InType input_data_;
 
-  static InType GenerateMatrix(int n) {
-    InType matrix;
-    int seed = 999;
-    std::mt19937 generator(seed);
-    std::uniform_real_distribution<double> distribution(-500.0, 500.0);
-    for (int i = 0; i < n; i++) {
-      std::vector<double> row;
-      row.reserve(n);
-      for (int j = 0; j < n; j++) {
-        row.push_back(distribution(generator));
-      }
-      matrix.push_back(row);
-    }
-    matrix[n / 2][n / 2] = -1000.0;
-    return matrix;
-  }
+  
 
   void SetUp() override {
     input_data_ = GenerateMatrix(8192);
