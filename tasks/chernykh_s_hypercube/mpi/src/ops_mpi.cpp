@@ -72,9 +72,9 @@ bool ChernykhSHypercubeMPI::RunImpl() {
   }
 
   volatile double workload_accumulator = 0.0;
-  for (int a = 0; a < 5000; a++) {
-    for (int b = 1; b < 5000; b++) {
-      workload_accumulator += static_cast<double>(a) / static_cast<double>(b);
+  for (int idx = 0; idx < 10000; idx++) {
+    for (int jdx = 1; jdx < 10000; jdx++) {
+      workload_accumulator += static_cast<double>(idx) / static_cast<double>(jdx);
     }
   }
 
