@@ -84,7 +84,7 @@ class ChernykhSRunFuncTestsMinMatrixElements : public ppc::util::BaseRunFuncTest
 
 namespace {
 
-TEST_P(ChernykhSRunFuncTestsMinMatrixElements, SumHypercube) {
+TEST_P(ChernykhSRunFuncTestsMinMatrixElements, FindMinInMatrix) {
   ExecuteTest(GetParam());
 }
 
@@ -101,7 +101,7 @@ const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 const auto kPerfTestName =
     ChernykhSRunFuncTestsMinMatrixElements::PrintFuncTestName<ChernykhSRunFuncTestsMinMatrixElements>;
 
-INSTANTIATE_TEST_SUITE_P(HypercubeTests, ChernykhSRunFuncTestsMinMatrixElements, kGtestValues, kPerfTestName);
+INSTANTIATE_TEST_SUITE_P(MinMatrixTests, ChernykhSRunFuncTestsMinMatrixElements, kGtestValues, kPerfTestName);
 
 }  // namespace
 }  // namespace chernykh_s_min_matrix_elements
