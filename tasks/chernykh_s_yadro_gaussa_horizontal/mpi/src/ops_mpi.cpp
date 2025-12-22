@@ -35,10 +35,11 @@ int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &da
 
 void ChernykhSYadroGaussaHorizontalMPI::GaussFilter(const std::vector<int> &local_data, std::vector<int> &local_res,
                                                     int stroki_local, int stolbci, int halo_top) {
+  int extended_rows = static_cast<int>(local_data.size() / static_cast<size_t>(stolbci));
   for (int i = 0; i < stroki_local; ++i) {
     for (int j = 0; j < stolbci; ++j) {
       size_t res_idx = static_cast<size_t>(i) * static_cast<size_t>(stolbci) + static_cast<size_t>(j);
-      local_res[res_idx] = CalculateGauss(local_data, i + halo_top, j, stolbci);
+      local_res[res_idx] = CalculateGauss(local_data, i + halo_top, j, stolbci, extended_rows);
     }
   }
 }
