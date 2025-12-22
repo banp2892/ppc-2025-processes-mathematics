@@ -11,6 +11,9 @@ class ChernykhSYadroGaussaHorizontalMPI : public BaseTask {
     return ppc::task::TypeOfTask::kMPI;
   }
   explicit ChernykhSYadroGaussaHorizontalMPI(const InType &in);
+  static void GaussFilter(const std::vector<int> &local_data, std::vector<int> &local_res, int stroki_local,
+                          int stolbci, int halo_top);
+  static int CalculateGauss(const std::vector<int> &data, int r, int c, int stolbci);
 
  private:
   bool ValidationImpl() override;

@@ -11,6 +11,7 @@ class ChernykhSYadroGaussaHorizontalSEQ : public BaseTask {
     return ppc::task::TypeOfTask::kSEQ;
   }
   explicit ChernykhSYadroGaussaHorizontalSEQ(const InType &in);
+  static int GetGaussianWeight(int ki, int kj);
 
  private:
   bool ValidationImpl() override;

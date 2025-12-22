@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
-#include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <random>
+#include <tuple>
 #include <vector>
 
 #include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
@@ -17,47 +18,44 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunPerfTests
  private:
   InType input_data_;
   size_t expected_output_size_ = 0;
-  int size = 2000; 
+  size_t size_ = 2000;
 
  protected:
   void SetUp() override {
-    int h = size;
-    int w = size;
+    size_t h = size_;
+    size_t w = size_;
     unsigned int seed = 999;
-    std::mt19937 gen(seed); 
+    std::mt19937 gen(seed);
     std::uniform_int_distribution<int> dist(0, 255);
     std::vector<int> pixels(h * w);
-    for (int i = 0; i < h * w; i++) {
+    for (size_t i = 0; i < h * w; i++) {
       pixels[i] = dist(gen);
     }
     input_data_ = std::make_tuple(w, h, pixels);
-    expected_output_size_ = static_cast<size_t>(h) * static_cast<size_t>(w);
+    expected_output_size_ = h * w;
   }
 
   bool CheckTestOutputData(OutType &output_data) final {
     int rank = 0;
     int is_mpi_active = 0;
     MPI_Initialized(&is_mpi_active);
-    if (is_mpi_active) {
-        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if (is_mpi_active != 0) {
+      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     }
     if (rank != 0 && output_data.empty()) {
-        return true;
+      return true;
     }
     if (output_data.size() != expected_output_size_) {
-        return false;
+      return false;
     }
-    for (int i = 0; i < output_data.size(); ++i) {
+    for (size_t i = 0; i < output_data.size(); ++i) {
       int val = output_data[i];
       if (val < 0 || val > 255) {
-          return false;
+        return false;
       }
     }
     return true;
   }
-
-
-  
 
   InType GetTestInputData() final {
     return input_data_;
