@@ -10,7 +10,8 @@
 
 namespace chernykh_s_yadro_gaussa_horizontal {
 
-int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &data, int r, int c, int stolbci) {
+int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &data, int r, int c, int stolbci,
+                                                      int extended_rows) {
   int pixel_sum = 0;
   for (int ki = -1; ki <= 1; ++ki) {
     for (int kj = -1; kj <= 1; ++kj) {
