@@ -60,7 +60,7 @@ class NesterovARunFuncTestsProcesses : public ppc::util::BaseRunFuncTests<InType
   }
 
  private:
-  InType input_data_;
+    InType input_data_ = 0;
 };
 
 namespace {

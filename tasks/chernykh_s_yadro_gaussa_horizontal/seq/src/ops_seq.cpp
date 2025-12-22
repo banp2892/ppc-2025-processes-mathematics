@@ -28,7 +28,6 @@ bool ChernykhSYadroGaussaHorizontalSEQ::ValidationImpl() {
   int stolbci = std::get<0>(GetInput());
   int stroki = std::get<1>(GetInput());
   auto &data = std::get<2>(GetInput());
-  // Приведение к size_t предотвращает переполнение при умножении
   return stolbci > 0 && stroki > 0 && data.size() == static_cast<size_t>(stolbci) * static_cast<size_t>(stroki);
 }
 
