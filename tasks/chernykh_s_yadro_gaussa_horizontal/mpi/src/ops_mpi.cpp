@@ -23,8 +23,9 @@ int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &da
         weight = 1;
       }
 
+      int cur_r = std::clamp(r + ki, 0, extended_rows - 1);
       int cur_c = std::clamp(c + kj, 0, stolbci - 1);
-      size_t idx = static_cast<size_t>(r + ki) * static_cast<size_t>(stolbci) + static_cast<size_t>(cur_c);
+      size_t idx = static_cast<size_t>(cur_r) * static_cast<size_t>(stolbci) + static_cast<size_t>(cur_c);
       pixel_sum += data[idx] * weight;
     }
   }
