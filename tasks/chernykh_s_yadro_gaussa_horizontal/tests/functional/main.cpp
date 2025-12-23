@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
-#include <vector>
 
 #include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 #include "chernykh_s_yadro_gaussa_horizontal/mpi/include/ops_mpi.hpp"
@@ -42,7 +41,7 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunFuncTests
     pixels.reserve(static_cast<size_t>(actual_w) * static_cast<size_t>(actual_h));
     for (int i = 0; i < actual_h; i++) {
       for (int j = 0; j < actual_w; j++) {
-        int pixel_value = static_cast<int>(data[i * x + j]);
+        int pixel_value = static_cast<int>(data[(i * x) + j]);
         pixels.push_back(pixel_value);
       }
     }
@@ -86,10 +85,10 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunFuncTests
             } else {
               weight = 1;
             }
-            sum += input_pixels[stroka * w + stolbec] * weight;
+            sum += input_pixels[(stroka * w) + stolbec] * weight;
           }
         }
-        reference_output[i * w + j] = sum / 16;
+        reference_output[(i * w) + j] = sum / 16;
       }
     }
 
@@ -101,7 +100,7 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunFuncTests
 };
 namespace {
 
-TEST_P(ChernykhSRunFuncTestsGaussaHorizontal, SumHypercube) {
+TEST_P(ChernykhSRunFuncTestsGaussaHorizontal, YadroGaussa) {
   ExecuteTest(GetParam());
 }
 

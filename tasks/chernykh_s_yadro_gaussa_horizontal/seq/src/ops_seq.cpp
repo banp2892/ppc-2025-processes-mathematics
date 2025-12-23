@@ -2,10 +2,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <tuple>
-#include <vector>
-
-#include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 
 namespace chernykh_s_yadro_gaussa_horizontal {
 
@@ -50,11 +46,11 @@ bool ChernykhSYadroGaussaHorizontalSEQ::RunImpl() {
         for (int kj = -1; kj <= 1; ++kj) {
           int row = std::clamp(i + ki, 0, stroki - 1);
           int column = std::clamp(j + kj, 0, stolbci - 1);
-          size_t idx = static_cast<size_t>(row) * static_cast<size_t>(stolbci) + static_cast<size_t>(column);
+          size_t idx = (static_cast<size_t>(row) * static_cast<size_t>(stolbci)) + static_cast<size_t>(column);
           sum += input_data[idx] * GetGaussianWeight(ki, kj);
         }
       }
-      size_t out_idx = static_cast<size_t>(i) * static_cast<size_t>(stolbci) + static_cast<size_t>(j);
+      size_t out_idx = (static_cast<size_t>(i) * static_cast<size_t>(stolbci)) + static_cast<size_t>(j);
       output_data[out_idx] = sum / 16;
     }
   }

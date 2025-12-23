@@ -4,14 +4,10 @@
 #include <cmath>
 #include <cstddef>
 #include <random>
-#include <tuple>
-#include <vector>
 
-#include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 #include "chernykh_s_yadro_gaussa_horizontal/mpi/include/ops_mpi.hpp"
 #include "chernykh_s_yadro_gaussa_horizontal/seq/include/ops_seq.hpp"
 #include "util/include/perf_test_util.hpp"
-
 namespace chernykh_s_yadro_gaussa_horizontal {
 
 class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunPerfTests<InType, OutType> {

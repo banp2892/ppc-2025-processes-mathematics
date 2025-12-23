@@ -4,9 +4,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <vector>
-
-#include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 
 namespace chernykh_s_yadro_gaussa_horizontal {
 
@@ -26,7 +23,7 @@ int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &da
 
       int cur_r = std::clamp(r + ki, 0, extended_rows - 1);
       int cur_c = std::clamp(c + kj, 0, stolbci - 1);
-      size_t idx = static_cast<size_t>(cur_r) * static_cast<size_t>(stolbci) + static_cast<size_t>(cur_c);
+      size_t idx = (static_cast<size_t>(cur_r) * static_cast<size_t>(stolbci)) + static_cast<size_t>(cur_c);
       pixel_sum += data[idx] * weight;
     }
   }
@@ -38,7 +35,7 @@ void ChernykhSYadroGaussaHorizontalMPI::GaussFilter(const std::vector<int> &loca
   int extended_rows = static_cast<int>(local_data.size() / static_cast<size_t>(stolbci));
   for (int i = 0; i < stroki_local; ++i) {
     for (int j = 0; j < stolbci; ++j) {
-      size_t res_idx = static_cast<size_t>(i) * static_cast<size_t>(stolbci) + static_cast<size_t>(j);
+      size_t res_idx = (static_cast<size_t>(i) * static_cast<size_t>(stolbci)) + static_cast<size_t>(j);
       local_res[res_idx] = CalculateGauss(local_data, i + halo_top, j, stolbci, extended_rows);
     }
   }
