@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
+#include <vector>
 
 #include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 #include "chernykh_s_yadro_gaussa_horizontal/mpi/include/ops_mpi.hpp"

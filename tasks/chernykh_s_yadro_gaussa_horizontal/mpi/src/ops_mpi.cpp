@@ -4,7 +4,9 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <vector>
 
+#include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 namespace chernykh_s_yadro_gaussa_horizontal {
 
 int ChernykhSYadroGaussaHorizontalMPI::CalculateGauss(const std::vector<int> &data, int r, int c, int stolbci,

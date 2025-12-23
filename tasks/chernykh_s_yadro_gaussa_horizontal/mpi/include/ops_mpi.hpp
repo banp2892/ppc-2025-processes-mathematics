@@ -1,8 +1,9 @@
 #pragma once
 
+#include <vector>
+
 #include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 #include "task/include/task.hpp"
-
 namespace chernykh_s_yadro_gaussa_horizontal {
 
 class ChernykhSYadroGaussaHorizontalMPI : public BaseTask {

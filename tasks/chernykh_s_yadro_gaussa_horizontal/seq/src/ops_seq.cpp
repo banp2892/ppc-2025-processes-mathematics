@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <vector>
 
+#include "chernykh_s_yadro_gaussa_horizontal/common/include/common.hpp"
 namespace chernykh_s_yadro_gaussa_horizontal {
 
 int ChernykhSYadroGaussaHorizontalSEQ::GetGaussianWeight(int ki, int kj) {
