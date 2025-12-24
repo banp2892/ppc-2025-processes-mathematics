@@ -58,26 +58,26 @@ class ChernykhSRunFuncTestsGaussaHorizontal : public ppc::util::BaseRunFuncTests
     ReadImage("chigur.jpg", size);
   }
   bool CheckTestOutputData(OutType &output_data) final {
-  int rank = 0;
-  int is_mpi_active = 0;
-  MPI_Initialized(&is_mpi_active);
-  if (is_mpi_active != 0) {
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  }
+    int rank = 0;
+    int is_mpi_active = 0;
+    MPI_Initialized(&is_mpi_active);
+    if (is_mpi_active != 0) {
+      MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    }
 
-  if (rank != 0) {
-    return true;
+    if (rank != 0) {
+      return true;
+    }
+    ChernykhSYadroGaussaHorizontalSEQ task_seq(input_data_);
+    if (task_seq.Validation()) {
+      task_seq.PreProcessing();
+      task_seq.Run();
+      task_seq.PostProcessing();
+    } else {
+      return false;
+    }
+    return output_data == task_seq.GetOutput();
   }
-  ChernykhSYadroGaussaHorizontalSEQ task_seq(input_data_);
-  if (task_seq.Validation()) {
-    task_seq.PreProcessing();
-    task_seq.Run();
-    task_seq.PostProcessing();
-  } else {
-    return false;
-  }
-  return output_data == task_seq.GetOutput();
-}
 
  private:
   InType input_data_;
