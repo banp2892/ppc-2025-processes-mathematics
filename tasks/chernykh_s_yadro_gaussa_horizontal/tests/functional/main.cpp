@@ -107,12 +107,51 @@ TEST_P(ChernykhSRunFuncTestsGaussaHorizontal, YadroGaussa) {
 
 const std::array<TestType, 5> kTestParam = {
     std::make_tuple(128, "chigur_128x128"), std::make_tuple(256, "chigur_256x256"),
-    std::make_tuple(512, "chigur_512x512"), std::make_tuple(800, "chigur_large_rect"),
-    std::make_tuple(1024, "chigur_full_or_max")};
+    std::make_tuple(512, "chigur_512x512"), std::make_tuple(800, "chigur_800x800"),
+    std::make_tuple(1024, "chigur_1024x1024")};
 const auto kTestTasksList = std::tuple_cat(ppc::util::AddFuncTask<ChernykhSYadroGaussaHorizontalMPI, InType>(
                                                kTestParam, PPC_SETTINGS_chernykh_s_yadro_gaussa_horizontal),
                                            ppc::util::AddFuncTask<ChernykhSYadroGaussaHorizontalSEQ, InType>(
                                                kTestParam, PPC_SETTINGS_chernykh_s_yadro_gaussa_horizontal));
+
+TEST(ChernykhSYadroGaussaHorizontalSEQManual, Test3x3FullMatrixCheck) {
+  int w = 3;
+  int h = 3;
+  std::vector<int> p = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+  InType input_data = std::make_tuple(w, h, p);
+  ChernykhSYadroGaussaHorizontalSEQ test_task(input_data);
+
+  ASSERT_TRUE(test_task.Validation());
+  test_task.PreProcessing();
+  test_task.Run();
+  test_task.PostProcessing();
+
+  std::vector<int> out = test_task.GetOutput();
+  ASSERT_EQ(out.size(), 9U);
+  const int c = 4;
+  const int e = 2;
+  const int k = 1;
+  const int s = 16;
+  EXPECT_EQ(out[0],
+            (p[0] * k + p[0] * e + p[1] * k + p[0] * e + p[0] * c + p[1] * e + p[3] * k + p[3] * e + p[4] * k) / s);
+  EXPECT_EQ(out[1],
+            (p[0] * k + p[1] * e + p[2] * k + p[0] * e + p[1] * c + p[2] * e + p[3] * k + p[4] * e + p[5] * k) / s);
+  EXPECT_EQ(out[2],
+            (p[1] * k + p[2] * e + p[2] * k + p[1] * e + p[2] * c + p[2] * e + p[4] * k + p[5] * e + p[5] * k) / s);
+  EXPECT_EQ(out[3],
+            (p[0] * k + p[0] * e + p[1] * k + p[3] * e + p[3] * c + p[4] * e + p[6] * k + p[6] * e + p[7] * k) / s);
+  EXPECT_EQ(out[4],
+            (p[0] * k + p[1] * e + p[2] * k + p[3] * e + p[4] * c + p[5] * e + p[6] * k + p[7] * e + p[8] * k) / s);
+  EXPECT_EQ(out[5],
+            (p[1] * k + p[2] * e + p[2] * k + p[4] * e + p[5] * c + p[5] * e + p[7] * k + p[8] * e + p[8] * k) / s);
+  EXPECT_EQ(out[6],
+            (p[3] * k + p[3] * e + p[4] * k + p[6] * e + p[6] * c + p[7] * e + p[6] * k + p[6] * e + p[7] * k) / s);
+  EXPECT_EQ(out[7],
+            (p[3] * k + p[4] * e + p[5] * k + p[6] * e + p[7] * c + p[8] * e + p[6] * k + p[7] * e + p[8] * k) / s);
+  EXPECT_EQ(out[8],
+            (p[4] * k + p[5] * e + p[5] * k + p[7] * e + p[8] * c + p[8] * e + p[7] * k + p[8] * e + p[8] * k) / s);
+}
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 

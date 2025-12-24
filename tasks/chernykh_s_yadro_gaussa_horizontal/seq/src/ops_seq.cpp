@@ -1,6 +1,7 @@
 #include "chernykh_s_yadro_gaussa_horizontal/seq/include/ops_seq.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cstddef>
 #include <vector>
 
@@ -8,13 +9,8 @@
 namespace chernykh_s_yadro_gaussa_horizontal {
 
 int ChernykhSYadroGaussaHorizontalSEQ::GetGaussianWeight(int ki, int kj) {
-  if (ki == 0 && kj == 0) {
-    return 4;
-  }
-  if (ki == 0 || kj == 0) {
-    return 2;
-  }
-  return 1;
+  static const std::array<std::array<int, 3>, 3> kKernel = {{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}};
+  return kKernel.at(static_cast<size_t>(ki) + 1).at(static_cast<size_t>(kj) + 1);
 }
 
 ChernykhSYadroGaussaHorizontalSEQ::ChernykhSYadroGaussaHorizontalSEQ(const InType &in) {
